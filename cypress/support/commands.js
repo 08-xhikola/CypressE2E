@@ -92,6 +92,7 @@ Cypress.Commands.add("logout", () => {
 
 Cypress.Commands.add("verifyElementsLength", (results) => {
   dashboardPage.getItemsAppearingResults().should("have.length", results);
+  cy.wait(4000);
 });
 
 Cypress.Commands.add("checkCheckboxByLabel", (labelText) => {

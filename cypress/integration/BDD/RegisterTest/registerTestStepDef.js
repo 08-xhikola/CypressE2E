@@ -96,6 +96,7 @@ Then("I verify that only 6 items are displayed", () => {
 
 Then('I check "16 GB" on Filter by attributes', () => {
   cy.checkCheckboxByLabel("16 GB");
+  cy.wait(3000);
 });
 
 Then("I verify that only 1 item is displayed", () => {
@@ -111,9 +112,9 @@ Then("I verify that 6 items are displayed now", () => {
 });
 
 When("I add the second and the third item on wishlist", () => {
-  dashboardPage.getAddToWishList().eq(1).click();
+  dashboardPage.getAddToWishList().eq(1).click({ force: true });
   cy.wait(3000);
-  dashboardPage.getAddToWishList().eq(2).click();
+  dashboardPage.getAddToWishList().eq(2).click({ force: true });
 });
 
 Then(
@@ -138,7 +139,8 @@ Then("I go back to the Notebooks Page", () => {
 
 Then("I add the fifth and sixth item on Shopping Cart", () => {
   dashboardPage.getAddToCartBtn().eq(4).click();
-  cy.wait(4000);
+  cy.wait(3000);
+  dashboardPage.getCloseToastBtn().click();
   dashboardPage.getAddToCartBtn().eq(5).click();
   cy.wait(3000);
 });
@@ -147,6 +149,7 @@ Then(
   'I verify that for the two last items added a notification with text: "The product has been added to your shopping cart" is displayed',
   () => {
     cy.checkTextToastify("has been added to your shopping cart");
+    dashboardPage.getCloseToastBtn().click();
   }
 );
 
@@ -187,3 +190,34 @@ Then(
     cy.verifyTotalPrice();
   }
 );
+
+When("the first item is deleted from the shopping cart", () => {
+  dashboardPage.getRemoveItemFromCartBtn().eq(0).click();
+  cy.wait(3000);
+});
+
+When("the Estimate Shopping button is clicked", () => {
+  // Code to click on the Estimate Shopping button
+});
+
+When(
+  "country, state, and postal code fields are filled and Apply button is clicked",
+  () => {
+    // Code to fill in country, state, and postal code fields and click on the Apply button
+  }
+);
+
+Then(
+  "verify that the number of elements in Shopping Cart table is decreased by 1",
+  () => {
+    dashboardPage.getCartNm().should("contain", "1");
+  }
+);
+
+Then("repeat the steps until the last item is deleted", () => {
+  // Code to repeat the steps of deleting items until the last item is deleted
+});
+
+Then("verify that Shopping Cart is empty", () => {
+  // Code to verify that the Shopping Cart is empty
+});

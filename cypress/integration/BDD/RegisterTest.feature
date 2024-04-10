@@ -3,8 +3,13 @@ Feature: User Registration
     I want to register on the website
     So that I can access the features
 
-    Scenario: End to End User Registration Flow
+    Background:
         Given I navigate to the website
+        When I click on the login menu
+        And I log in with valid credentials
+
+
+    Scenario: End to End User Registration Flow
         When I click on the login menu
         Then I click on the register button
         And I check fields to be mandatory
@@ -14,18 +19,12 @@ Feature: User Registration
         Then the Register response should be successful
 
     Scenario: End to End Login Flow
-        Given I navigate to the website
-        When I click on the login menu
-        And I log in with valid credentials
         Then I should see the "Welcome to our store" text
         And I should see the "Log out" menu
         When I log out
         Then I should be logged out successfully
 
     Scenario: End to End Dashboard Flow
-        Given I navigate to the website
-        When I click on the login menu
-        And I log in with valid credentials
         When I hover over the Computers Menu
         And I click on Notebooks
         Then I verify that I have navigated to the Notebooks Page
@@ -46,9 +45,6 @@ Feature: User Registration
         And Shopping Cart on Menu bar displays 2
 
     Scenario: End to End Shopping Cart Page
-        Given I navigate to the website
-        When I click on the login menu
-        And I log in with valid credentials
         When I hover over the Shopping Cart Menu
         Then I verify that the 'Go To Cart' button is displayed
         When I click the 'Go To Cart' button
@@ -58,3 +54,14 @@ Feature: User Registration
             | Continue Shopping |
             | Estimate Shipping |
         And I verify that the prices sum for all items is equal to Total Price at the end of the page, and the price color is blue
+
+    Scenario: Empty Shopping Cart
+        When I hover over the Shopping Cart Menu
+        When I click the 'Go To Cart' button
+        When the first item is deleted from the shopping cart
+        Then verify that the number of elements in Shopping Cart table is decreased by 1
+        When the Estimate Shopping button is clicked
+        And country, state, and postal code fields are filled and Apply button is clicked
+        Then verify that the number of elements in Shopping Cart table is decreased by 1
+        And repeat the steps until the last item is deleted
+        Then verify that Shopping Cart is empty

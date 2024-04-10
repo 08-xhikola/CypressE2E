@@ -30,6 +30,10 @@ class DashboardPage {
   getToastSuccesfulNotif() {
     return cy.get(".content");
   }
+
+  getCloseToastBtn() {
+    return cy.get("span[title='Close']");
+  }
   getDetailsPageHeader() {
     return cy.get("h1");
   }
@@ -39,6 +43,10 @@ class DashboardPage {
   }
   getCartNm() {
     return cy.get(".cart-qty");
+  }
+
+  getRemoveItemFromCartBtn() {
+    return cy.get(".remove-btn");
   }
 }
 export default DashboardPage;
