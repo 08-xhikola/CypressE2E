@@ -1,0 +1,22 @@
+{
+  "name": "cypressminiproject",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Desara Xhikola",
+  "license": "ISC",
+  "devDependencies": {
+    "cypress": "^13.7.2",
+    "cypress-cucumber-preprocessor": "^4.3.1",
+    "cypress-mochawesome-reporter": "^3.8.2"
+  },
+  "dependencies": {
+    "@badeball/cypress-cucumber-preprocessor": "^20.0.3",
+    "cypress-recurse": "^1.35.3",
+    "faker": "^6.6.6",
+    "multiple-cucumber-html-reporter": "^3.6.2"
+  }
+}
