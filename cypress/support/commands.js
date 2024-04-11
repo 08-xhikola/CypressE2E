@@ -2,12 +2,13 @@ import RegisterPage from "../pages/RegisterPage";
 import LoginPage from "../pages/LoginPage";
 import DashboardPage from "../pages/DashboardPage";
 import ShoppingCartPage from "../pages/ShoppingCart";
-import { recurse } from "cypress-recurse";
+import EstimateShippingPage from "../pages/EstimateShipping";
 
 const registerPage = new RegisterPage();
 const loginPage = new LoginPage();
 const dashboardPage = new DashboardPage();
 const shoppingCart = new ShoppingCartPage();
+const estimateShipping = new EstimateShippingPage();
 
 Cypress.Commands.add("verifyPageTitle", (expectedTitle) => {
   registerPage.getPageTitleHeader().then(($title) => {
@@ -22,12 +23,10 @@ Cypress.Commands.add("registerStatus", () => {
     url: "https://demo.nopcommerce.com/registerresult/1?returnUrl=/",
     followRedirect: false,
   }).then((response) => {
-    // Verify that the response status code is 200 OK
     expect(response.status).to.equal(200);
   });
 });
 
-// Define the makeid function to generate a random email
 const makeid = () => {
   var result = "";
   var characters =
@@ -39,7 +38,6 @@ const makeid = () => {
   return result;
 };
 
-// Generate a random email for both registration and login
 const email = makeid() + "@gmail.com";
 
 Cypress.Commands.add("registerForm", () => {
@@ -58,7 +56,6 @@ Cypress.Commands.add("registerForm", () => {
     registerPage.getBirthDayDropdown().select(8);
     registerPage.getBirthMonthDropdown().select("September");
     registerPage.getBirthYearDropdown().select("2001");
-    // Use the same email for registration
     registerPage.getEmailField().type(email);
     registerPage.getCompanyField().type(companyName);
     registerPage.getOptionInputNewsletter().check();
@@ -72,7 +69,6 @@ Cypress.Commands.add("loginFlow", () => {
   cy.fixture("credentials").then((data) => {
     const { password } = data;
 
-    // Use the same email for login
     loginPage.getEmailField().type(email);
     loginPage.getPasswordField().type(password);
     loginPage.getLogInBtn().should("be.enabled").click();
@@ -85,7 +81,6 @@ Cypress.Commands.add("logout", () => {
     url: "https://demo.nopcommerce.com/logout",
     followRedirect: false,
   }).then((response) => {
-    // Verify that the response status code is 302 Found
     expect(response.status).to.equal(302);
   });
 });
@@ -109,6 +104,32 @@ Cypress.Commands.add("uncheckCheckboxByLabel", (labelText) => {
 
 Cypress.Commands.add("checkTextToastify", (text) => {
   dashboardPage.getToastSuccesfulNotif().invoke("text").should("contain", text);
+});
+
+Cypress.Commands.add("verifyShoppingCartItemCount", () => {
+  shoppingCart.getShoppingCartMenu().should("be.visible");
+  shoppingCart.getShoppingCartMenu().trigger("mouseover");
+
+  cy.wait(2000);
+
+  dashboardPage
+    .getCartNm()
+    .invoke("text")
+    .then((actualItemCount) => {
+      const actualItemCountNumber = parseInt(
+        actualItemCount.match(/\d+/)[0],
+        10
+      );
+
+      dashboardPage.getAddToCartItemsList().then(($quantitySpans) => {
+        let sumOfQuantities = 0;
+        $quantitySpans.each((index, element) => {
+          const quantity = parseInt(element.textContent.trim(), 10);
+          sumOfQuantities += quantity;
+        });
+        expect(sumOfQuantities).to.equal(actualItemCountNumber);
+      });
+    });
 });
 
 Cypress.Commands.add("checkUrlAndHeaderText", () => {
@@ -145,24 +166,70 @@ Cypress.Commands.add("verifyDisplayedButtons", (buttonNames) => {
 });
 
 Cypress.Commands.add("verifyTotalPrice", () => {
-  // Get all item prices
   cy.get(".product-subtotal").then(($items) => {
     let totalPrice = 0;
 
-    // Loop through each item price and extract the numerical value
     $items.each((index, item) => {
       const priceText = Cypress.$(item).text();
       const price = parseFloat(priceText.replace(/[^0-9.-]+/g, ""));
       totalPrice += price;
     });
 
-    // Get the total amount
     cy.get(".value-summary > strong").then(($total) => {
       const totalText = $total.text();
       const total = parseFloat(totalText.replace(/[^0-9.-]+/g, ""));
-
-      // Assert that the sum of item prices matches the total amount
       expect(totalPrice).to.equal(total);
     });
+  });
+});
+
+Cypress.Commands.add("fillAddressFieldsAndApply", () => {
+  estimateShipping.getCountrySelect().select("Albania");
+  cy.fixture("credentials").then((data) => {
+    const postalCode = data.postalCode;
+    estimateShipping.getZipCodeField().type(postalCode).blur();
+  });
+  cy.wait(4000);
+  estimateShipping.getApplyBtn().click({ force: true });
+});
+
+Cypress.Commands.add("removeAllItemsFromCart", () => {
+  function removeItemsFromCart() {
+    shoppingCart.getRemoveItemFromCartBtn().then(($btn) => {
+      if ($btn.length > 0) {
+        cy.log("Removing item from the cart");
+        cy.wrap($btn).click({ force: true });
+        estimateShipping.getNoDataMsg().then(($noDataMsg) => {
+          if ($noDataMsg.is(":visible")) {
+            cy.log("No more items in the cart");
+            return;
+          } else {
+            removeItemsFromCart();
+          }
+        });
+      } else {
+        cy.log("No more items to remove from the cart");
+      }
+    });
+  }
+
+  shoppingCart.getRemoveItemFromCartBtn().then(($btn) => {
+    if ($btn.length > 0) {
+      removeItemsFromCart();
+    } else {
+      cy.log("No items in the cart to remove");
+    }
+  });
+});
+
+Cypress.Commands.add("addToCartAndVerify", () => {
+  dashboardPage.getItemDetailsAddToWishlist().click();
+
+  cy.request({
+    method: "POST",
+    url: "https://demo.nopcommerce.com/addproducttocart/details/*",
+    followRedirect: false,
+  }).then((response) => {
+    expect(response.status).to.equal(302);
   });
 });

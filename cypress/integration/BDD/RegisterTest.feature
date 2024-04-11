@@ -55,7 +55,11 @@ Feature: User Registration
             | Estimate Shipping |
         And I verify that the prices sum for all items is equal to Total Price at the end of the page, and the price color is blue
 
-    Scenario: Empty Shopping Cart
+
+    Scenario: End To End Empty Shopping Cart
+        When I hover over the Computers Menu
+        And I click on Notebooks
+        And I add the fifth and sixth item on Shopping Cart
         When I hover over the Shopping Cart Menu
         When I click the 'Go To Cart' button
         When the first item is deleted from the shopping cart
@@ -65,3 +69,11 @@ Feature: User Registration
         Then verify that the number of elements in Shopping Cart table is decreased by 1
         And repeat the steps until the last item is deleted
         Then verify that Shopping Cart is empty
+
+
+    Scenario: End to End Add item to wish list
+        When I hover over the Computers Menu
+        And I click on Notebooks
+        When User selects one item and opens detail page of it
+        Then I verify that the detail page for this item is open
+        Then Check item is added to wishlist after interception

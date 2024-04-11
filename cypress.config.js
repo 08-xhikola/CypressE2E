@@ -13,7 +13,6 @@ async function setupNodeEvents(on, config) {
 
   return config;
 }
-
 module.exports = defineConfig({
   viewportWidth: 1280,
   viewportHeight: 720,
@@ -25,6 +24,4 @@ module.exports = defineConfig({
     setupNodeEvents,
     specPattern: "cypress/integration/BDD/*.feature",
   },
-  fixturesFolder: "cypress/fixtures",
-  supportFileExtensions: [".json"],
 });

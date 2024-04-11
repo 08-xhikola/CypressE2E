@@ -45,8 +45,12 @@ class DashboardPage {
     return cy.get(".cart-qty");
   }
 
-  getRemoveItemFromCartBtn() {
-    return cy.get(".remove-btn");
+  getItemDetailsAddToWishlist() {
+    return cy.get("#add-to-wishlist-button-7");
+  }
+
+  getAddToCartItemsList() {
+    return cy.get(".product .quantity span");
   }
 }
 export default DashboardPage;

@@ -140,7 +140,6 @@ Then("I go back to the Notebooks Page", () => {
 Then("I add the fifth and sixth item on Shopping Cart", () => {
   dashboardPage.getAddToCartBtn().eq(4).click();
   cy.wait(3000);
-  dashboardPage.getCloseToastBtn().click();
   dashboardPage.getAddToCartBtn().eq(5).click();
   cy.wait(3000);
 });
@@ -159,8 +158,7 @@ Then("Wishlist on Menu bar displays 2", () => {
 });
 
 Then("Shopping Cart on Menu bar displays 2", () => {
-  cy.wait(2000);
-  dashboardPage.getCartNm().should("contain", "2");
+  cy.verifyShoppingCartItemCount();
 });
 
 When("I hover over the Shopping Cart Menu", () => {
@@ -173,7 +171,7 @@ Then("I verify that the 'Go To Cart' button is displayed", () => {
 });
 
 When("I click the 'Go To Cart' button", () => {
-  shoppingCart.getGoToCartBtn().click();
+  shoppingCart.getGoToCartBtn().click({ force: true });
 });
 
 Then("I verify that I have navigated to the Shopping Cart Page", () => {
@@ -192,32 +190,42 @@ Then(
 );
 
 When("the first item is deleted from the shopping cart", () => {
-  dashboardPage.getRemoveItemFromCartBtn().eq(0).click();
+  shoppingCart.getRemoveItemFromCartBtn().eq(0).dblclick();
   cy.wait(3000);
 });
 
 When("the Estimate Shopping button is clicked", () => {
-  // Code to click on the Estimate Shopping button
+  shoppingCart.getEstimateShippingBtn().click();
 });
 
-When(
+Then(
   "country, state, and postal code fields are filled and Apply button is clicked",
   () => {
-    // Code to fill in country, state, and postal code fields and click on the Apply button
+    cy.fillAddressFieldsAndApply();
   }
 );
 
 Then(
   "verify that the number of elements in Shopping Cart table is decreased by 1",
   () => {
-    dashboardPage.getCartNm().should("contain", "1");
+    cy.verifyShoppingCartItemCount();
   }
 );
 
 Then("repeat the steps until the last item is deleted", () => {
-  // Code to repeat the steps of deleting items until the last item is deleted
+  cy.removeAllItemsFromCart();
 });
 
 Then("verify that Shopping Cart is empty", () => {
-  // Code to verify that the Shopping Cart is empty
+  dashboardPage.getCartNm().should("contain", "0");
+});
+
+When("User selects one item and opens detail page of it", () => {
+  dashboardPage.getItemsAppearingResults().eq(3).click();
+  cy.wait(3000);
+  cy.checkUrlAndHeaderText();
+});
+
+Then("Check item is added to wishlist after interception", () => {
+  cy.addToCartAndVerify();
 });

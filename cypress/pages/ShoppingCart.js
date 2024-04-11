@@ -26,6 +26,9 @@ class ShoppingCartPage {
   getTotalPriceAmount() {
     return cy.get(".value-summary > strong");
   }
+  getRemoveItemFromCartBtn() {
+    return cy.get("button.remove-btn");
+  }
 }
 
 export default ShoppingCartPage;

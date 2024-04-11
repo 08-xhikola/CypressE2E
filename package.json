@@ -13,9 +13,16 @@
     "cypress-cucumber-preprocessor": "^4.3.1",
     "cypress-mochawesome-reporter": "^3.8.2"
   },
+  "cypress-cucumber-preprocessor": {
+    "json": {
+      "enabled": true,
+      "output": "cypress/cucumberReports/results.json"
+    }
+  },
   "dependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^20.0.3",
     "cypress-recurse": "^1.35.3",
+    "@cypress/browserify-preprocessor": "latest",
     "faker": "^6.6.6",
     "multiple-cucumber-html-reporter": "^3.6.2"
   }
