@@ -4,9 +4,6 @@
 
 This mini-project aims to automate 6 scenarios using the Cypress framework. It follows the Page Object Model structure for organizing the code and utilizes asserts for verifications. Waits methods are used to avoid implicit waits, and screenshot capture on failure is configured for better debugging.
 
-## Project Structure
-
-The project structure follows the Page Object Model (POM) design pattern. Here's the layout:
 
 ## Installation
 
@@ -17,7 +14,9 @@ The project structure follows the Page Object Model (POM) design pattern. Here's
 
    npm install
 
-3. To run the tests, execute:
+3. To run the tests, install Cypress and then execute:
+   
+   npm install cypress --save-dev.
 
    npx cypress open
 
