@@ -16,7 +16,7 @@ This mini-project aims to automate 6 scenarios using the Cypress framework. It f
 
 3. To run the tests, install Cypress and then execute:
    
-   npm install cypress --save-dev.
+   npm install cypress --save-dev
 
    npx cypress open
 
