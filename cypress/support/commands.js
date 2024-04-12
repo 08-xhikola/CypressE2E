@@ -198,7 +198,7 @@ Cypress.Commands.add("removeAllItemsFromCart", () => {
     shoppingCart.getRemoveItemFromCartBtn().then(($btn) => {
       if ($btn.length > 0) {
         cy.log("Removing item from the cart");
-        cy.wrap($btn).click({ force: true });
+        cy.wrap($btn).click({ force: true, multiple: true });
         estimateShipping.getNoDataMsg().then(($noDataMsg) => {
           if ($noDataMsg.is(":visible")) {
             cy.log("No more items in the cart");
@@ -213,13 +213,7 @@ Cypress.Commands.add("removeAllItemsFromCart", () => {
     });
   }
 
-  shoppingCart.getRemoveItemFromCartBtn().then(($btn) => {
-    if ($btn.length > 0) {
-      removeItemsFromCart();
-    } else {
-      cy.log("No items in the cart to remove");
-    }
-  });
+  removeItemsFromCart();
 });
 
 Cypress.Commands.add("addToCartAndVerify", () => {
